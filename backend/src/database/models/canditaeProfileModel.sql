@@ -58,7 +58,31 @@ CREATE TABLE candidate_experiences (
         OR end_date >= start_date
     )
 );
---   
+--  CANDITATE EDUCATION TABLE
+CREATE TABLE candidate_educations (
+    education_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    highest_degree highest_degree NOT NULL,
+    institution_name VARCHAR(255) NOT NULL,
+    field_of_study VARCHAR(255),
+    start_date DATE NOT NULL,
+    is_current BOOLEAN NOT NULL DEFAULT FALSE,
+    description TEXT,
+    end_date DATE,
+    gpa DECIMAL(3, 2) CHECK (gpa >= 0 AND gpa <= 4.0),
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+);
 
 
 
+CREATE TABLE candidate_skills (
+    skill_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    skill_name VARCHAR(255) NOT NULL,
+    proficiency_level skill_proficiency,
+    years_of_experience INT CHECK (years_of_experience >= 0),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
