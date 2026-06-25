@@ -5,3 +5,4 @@ CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE role_type ENUM ('candidate','recruiter','admin')
 -- for user type
+CREATE TABLE gender_type ENUM ('male','female','others')
