@@ -2,7 +2,13 @@ CREATE TABLE jobs (
     job_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
     user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-    category_id UUID NOT NULL REFERENCES categories(category_id) ON DELETE SET NULL,
+    company_id UUID NOT NULL REFERENCES company(company_id),
+    recruiter_id UUID NOT NULL REFERENCES recruiter(recruiter_id),
+
+    category_id UUID NOT NULL
+        REFERENCES categories(category_id),
+
+
 
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,

@@ -70,9 +70,8 @@ CREATE TABLE candidate_educations (
     description TEXT,
     end_date DATE,
     gpa DECIMAL(3, 2) CHECK (gpa >= 0 AND gpa <= 4.0),
-    description TEXT,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 
