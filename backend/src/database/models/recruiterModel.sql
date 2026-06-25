@@ -10,3 +10,7 @@ CREATE TABLE recruiter(
  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 )
 ;
+
+CREATE INDEX idx_recruiter_user ON recruiter(user_id);
+CREATE INDEX idx_recruiter_company ON recruiter(company_id);
+CREATE INDEX idx_recruiter_email ON recruiter(email);

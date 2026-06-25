@@ -12,3 +12,9 @@ CREATE TABLE applications (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_applications_user ON applications(user_id);
+CREATE INDEX idx_applications_job ON applications(job_id);
+CREATE INDEX idx_applications_status ON applications(status);
+CREATE INDEX idx_applications_user_status ON applications(user_id, status);
+CREATE INDEX idx_applications_created_at ON applications(created_at DESC);

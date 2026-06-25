@@ -21,3 +21,12 @@ CREATE TABLE jobs (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_jobs_user ON jobs(user_id);
+CREATE INDEX idx_jobs_company ON jobs(company_id);
+CREATE INDEX idx_jobs_recruiter ON jobs(recruiter_id);
+CREATE INDEX idx_jobs_category ON jobs(category_id);
+CREATE INDEX idx_jobs_location ON jobs(location);
+CREATE INDEX idx_jobs_employment_type ON jobs(employment_type);
+CREATE INDEX idx_jobs_experience_level ON jobs(experience_level);
+CREATE INDEX idx_jobs_created_at ON jobs(created_at DESC);

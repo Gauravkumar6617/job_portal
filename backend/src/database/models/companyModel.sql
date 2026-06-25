@@ -17,3 +17,8 @@ CREATE TABLE company(
 
 )
 ;
+
+CREATE INDEX idx_company_email ON company(email);
+CREATE INDEX idx_company_location ON company(city, state, country);
+CREATE INDEX idx_company_active ON company(is_active);
+CREATE INDEX idx_company_name ON company(name);
