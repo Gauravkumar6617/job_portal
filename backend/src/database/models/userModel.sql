@@ -1,0 +1,14 @@
+CREATE TABLE users (
+    user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Updated default function
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role role_type NOT NULL DEFAULT 'candidate',      
+    is_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    refresh_token VARCHAR(255),                         
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,          
+    reset_token VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- Upgraded to timezone-aware
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- Upgraded to timezone-aware
+    deleted_at TIMESTAMP WITH TIME ZONE                         -- Upgraded to timezone-aware
+); 
