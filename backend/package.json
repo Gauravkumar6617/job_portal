@@ -3,20 +3,22 @@
   "version": "1.0.0",
   "description": "Backend API for Job Portal",
   "type": "module",
-"scripts": {
-  "dev": "nodemon --exec node src/server.js",
-  "start": "node src/server.js"
-},
+  "scripts": {
+    "dev": "nodemon --exec node src/server.js",
+    "start": "node src/server.js"
+  },
   "main": "server.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.28.0",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "pg": "^8.22.0",
+    "winston": "^3.19.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
