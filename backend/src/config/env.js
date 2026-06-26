@@ -7,12 +7,21 @@ const envSchema = z.object({
 //  enviroment type
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 // port
-    PORT: z.string().transform((val) => parseInt(val, 10).default(5000)),
+    PORT: z.coerce.number().default(5000),
 // database url and filter
     DATABASE_URL: z.string().url({ message: "DATABASE URL must be a valid URL" }).refine((url) => url.startsWith('postgres://') || url.startsWith('postgresql://'), { message: "DATABASE URL must start with postgres:// or postgresql://" }),
 // redis url
-    REDIS_URL: z.string().url({ message: "REDIS URL must be a valid URL" }).refine((url) => url.startsWith('redis://'), { message: "REDIS URL must start with redis://" }),
-    REDIS_PASSWORD: z.string().optional(),
+ REDIS_HOST: z.string().min(1, "REDIS_HOST is required"),
+
+  REDIS_PORT: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(65535),
+
+  REDIS_USERNAME: z.string().min(1, "REDIS_USERNAME is required"),
+
+  REDIS_PASSWORD: z.string().min(1, "REDIS_PASSWORD is required"),
 });
 
 
