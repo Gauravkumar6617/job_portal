@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { logger } from "./config/logger.js";
+import userRoutes from "./modules/users/user.routes.js";
+
 const app = express();
 //  to convert hte js object into json
 app.use(express.json());
@@ -32,4 +34,6 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP", timestamp: new Date() });
 });
 
+// user auth api
+app.use("/api/v1/users", userRoutes);
 export default app;

@@ -1,4 +1,4 @@
-import pool from "../../config/db.js";
+import { pool } from "../../config/db.js";
 
 class UserRepository {
   async createUser(name, email, password, role) {
