@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { success, z } from "zod";
+import { z } from "zod";
 dotenv.config();
 
 const envSchema = z.object({
@@ -29,6 +29,12 @@ const envSchema = z.object({
   JWT_ACCESS_SECRET: z.string().min(1, "JWT_ACCESS_SECRET is required"),
 
   JWT_REFRESH_SECRET: z.string().min(1, "JWT_REFRESH_SECRET is required"),
+
+  TWILIO_ACCOUNT_SID: z.string().min(1, "TWILIO_ACCOUNT_SID is required"),
+
+  TWILIO_AUTH_TOKEN: z.string().min(1, "TWILIO_AUTH_TOKEN is required"),
+
+  TWILIO_WHATSAPP_FROM: z.string().min(1, "TWILIO_WHATSAPP_FROM is required"),
 });
 
 const _env = envSchema.safeParse(process.env);
