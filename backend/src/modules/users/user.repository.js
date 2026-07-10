@@ -1,16 +1,16 @@
 import { pool } from "../../config/db.js";
 
 class UserRepository {
-  async createUser(name, email, passwordHash, role) {
-    const result = await pool.query(
-      `INSERT INTO users (name, email, password_hash, role)
-       VALUES ($1, $2, $3, $4)
-       RETURNING user_id, name, email, role, is_verified, created_at, updated_at`,
-      [name, email, passwordHash, role]
-    );
+async createUser(name, email, phone, passwordHash) {
+  const result = await pool.query(
+    `INSERT INTO users (name, email, phone, password_hash)
+     VALUES ($1, $2, $3, $4)
+     RETURNING user_id, name, email, phone, role, is_verified, created_at`,
+    [name, email, phone, passwordHash]
+  );
+  return result.rows[0];
+}
 
-    return result.rows[0];
-  }
 
   async getUserByEmail(email) {
     const result = await pool.query(
@@ -24,12 +24,35 @@ class UserRepository {
     return result.rows[0];
   }
 
+async getUserByPhone(phone) {
+  const result = await pool.query(
+    `SELECT user_id, name, email, phone, role, password_hash, 
+            is_verified, is_deleted, refresh_token, created_at
+     FROM users
+     WHERE phone = $1
+     AND is_deleted = FALSE`,
+    [phone]
+  );
+  return result.rows[0];
+}
   async getUserById(userId) {
     const result = await pool.query(
       `SELECT *
        FROM users
        WHERE user_id = $1
        AND is_deleted = FALSE`,
+      [userId]
+    );
+
+    return result.rows[0];
+  }
+  async markUserVerified(userId){
+    const result = await pool.query(
+      `UPDATE users
+       SET is_verified = TRUE,
+           updated_at = NOW()
+       WHERE user_id = $1
+       RETURNING user_id, name, email, role, is_verified`,
       [userId]
     );
 

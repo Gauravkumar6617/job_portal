@@ -4,6 +4,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { logger } from "./config/logger.js";
 import userRoutes from "./modules/users/user.routes.js";
 
+
 const app = express();
 //  to convert hte js object into json
 app.use(express.json());
