@@ -1,4 +1,4 @@
-import { registerUser, loginUser, verifyOtp ,logoutUser} from "./user.service.js";
+import { registerUser, loginUser, verifyUserOtp } from "./user.service.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { successResponse } from "../../utils/response.js";
 
@@ -7,16 +7,13 @@ export const userRegister = asyncHandler(async (req, res) => {
   successResponse(res, result, "User registered successfully", 201);
 });
 export const otpVerify = asyncHandler(async (req, res) => {
-  const result = await verifyOtp(req.body);
+  const result = await verifyUserOtp(req.body);
   successResponse(res, result, "OTP verified successfully", 200);
 });
 export const otpResend = asyncHandler(async (req, res) => {
-  const result = await resendOtp(req.body); 
-successResponse(res, result, "OTP resent successfully", 200);
+  const result = await resendOtp(req.body);
+  successResponse(res, result, "OTP resent successfully", 200);
 });
-
-
-
 
 export const userLogin = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken, user } = await loginUser(req.body);

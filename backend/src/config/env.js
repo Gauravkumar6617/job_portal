@@ -4,8 +4,7 @@ dotenv.config();
 
 const envSchema = z.object({
   //  enviroment type
-  NODE_ENV: z
-    .enum(["development", "test", "production"]),
+  NODE_ENV: z.enum(["development", "test", "production"]),
   // port
   PORT: z.coerce.number().default(5000),
   // database url and filter
@@ -34,6 +33,10 @@ const envSchema = z.object({
   TWILIO_AUTH_TOKEN: z.string().min(1, "TWILIO_AUTH_TOKEN is required"),
 
   TWILIO_WHATSAPP_FROM: z.string().min(1, "TWILIO_WHATSAPP_FROM is required"),
+
+  MAIL_USERNAME: z.string().min(1, "MAIL_USERNAME is required"),
+
+  MAIL_PASSWORD: z.string().min(1, "MAIL_PASSWORD is required"),
 });
 
 const _env = envSchema.safeParse(process.env);

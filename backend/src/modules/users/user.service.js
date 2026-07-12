@@ -2,37 +2,43 @@ import userRepository from "./user.repository.js";
 import { comparePassword, hashedPassword } from "../../utils/bcrypt.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.js";
 import { hashToken } from "../../utils/jwt.js";
-import { generateOtp,saveOtp } from "../../utils/otp.js";
+import {
+  generateOtp,
+  saveOtp,
+  getOtp,
+  delOtp,
+  verifyOtp,
+} from "../../utils/otp.js";
 import { env } from "../../config/env.js";
 import { sendWhatsappOtp } from "../../utils/twilio.js";
+import { sendWelcomeEmail } from "../../utils/email.js";
 export const registerUser = async (data) => {
   const { name, email, password, phone } = data;
-  // to check is email already exist or not 
+  // to check is email already exist or not
   const isUserEmailExist = await userRepository.getUserByEmail(email);
   if (isUserEmailExist) {
     throw new Error("User already exists", 409);
   }
-  // to check is phone number exists or not 
+  // to check is phone number exists or not
   const isUserPhoneExist = await userRepository.getUserByPhone(phone);
   if (isUserPhoneExist) {
     throw new Error("User already exists", 409);
   }
-//  to hash th password 
+  //  to hash th password
   const passwordHash = await hashedPassword(password, 10);
-  //  to create unverified user 
+  //  to create unverified user
   const newUser = await userRepository.createUser(
     name,
     email,
     phone,
     passwordHash,
-
   );
-  // to generate otp and pass it to save otp  to function 
+  // to generate otp and pass it to save otp  to function
   const otp = generateOtp();
   await saveOtp(phone, otp);
 
-//  if production then send otp
-if (env.NODE_ENV === "production") {
+  //  if production then send otp
+  if (env.NODE_ENV === "production") {
     await sendWhatsappOtp(phone, otp);
   } else {
     console.log(`[DEV] OTP for ${phone}: ${otp}`);
@@ -47,77 +53,70 @@ if (env.NODE_ENV === "production") {
   };
 };
 
-export const verifyOtp = async (data) => {
-  const { phone, otp } = data;
+export const verifyUserOtp = async ({ phone, otp }) => {
   const user = await userRepository.getUserByPhone(phone);
-  try {
-    if(!user){
-      throw new Error("User not found", 404);
-    }
+  if (!user) {
+    throw new Error("User not found");
+  }
 
-    if(user.is_verified){
-      throw new Error("User already verified", 400);
+  if (user.is_verified) {
+    throw new Error("User already verified");
+  }
 
-    }
-    const storeOtp = await getOtp(phone);
-    if(!storeOtp){
-      throw new Error("OTP not found", 404);
-    }
-    const isOtpVerified = verifyOtp(storeOtp,otp);
-    if(!isOtpVerified){
-      throw new Error("Invalid OTP", 400);
-    }
-     
-const verifiedUser = await userRepository.markUserVerified(user.user_id);
-    await delOtp(phone);
-    return {
+  const storedOtp = await getOtp(phone);
+  if (!storedOtp) {
+    throw new Error("OTP expired or not found. Please request a new one.");
+  }
+
+  const isOtpValid = verifyOtp(storedOtp, otp);
+  if (!isOtpValid) {
+    throw new Error("Invalid OTP");
+  }
+
+  const verifiedUser = await userRepository.markUserVerified(user.user_id);
+  await delOtp(phone);
+  await sendWelcomeEmail(verifiedUser.name, verifiedUser.email);
+
+  return {
     message: "Phone verified successfully. You can now log in.",
     user_id: verifiedUser.user_id,
   };
-
-    
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message, error.statusCode);
-    
-  }
-}
+};
 
 export const resendOtp = async (data) => {
   const { phone } = data;
-const user = await userRepository.getUserByPhone(phone);
-try {
-  if(!user){
-  throw new Error("User not found", 404);
-}
-if(user.is_verified){
-  throw new Error("User already verified", 400);
-}
-const otp = generateOtp();
-await saveOtp(phone, otp);
-if (env.NODE_ENV === "production"){
-  await sendWhatsappOtp(phone, otp);
-} else {
-  console.log(`[DEV] OTP for ${phone}: ${otp}`);  
-  
-}
- return { message: "OTP resent via WhatsApp." }; 
-} catch (error) {
-  console.log(error);
-  throw new Error(error.message, error.statusCode);
-  
-}
-}
+  const user = await userRepository.getUserByPhone(phone);
+  try {
+    if (!user) {
+      throw new Error("User not found", 404);
+    }
+    if (user.is_verified) {
+      throw new Error("User already verified", 400);
+    }
+    const otp = generateOtp();
+    await saveOtp(phone, otp);
+    if (env.NODE_ENV === "production") {
+      await sendWhatsappOtp(phone, otp);
+    } else {
+      console.log(`[DEV] OTP for ${phone}: ${otp}`);
+    }
+    return { message: "OTP resent via WhatsApp." };
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message, error.statusCode);
+  }
+};
 
 export const loginUser = async ({ phone, password }) => {
   // 1. Find user
   const user = await userRepository.getUserByPhone(phone);
 
   // 2. Timing attack prevention
-  const dummyHash = "$2b$10$invalidhashxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+  const dummyHash =
+    "$2b$10$invalidhashxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
   const isPasswordMatch = await comparePassword(
     password,
-    user ? user.password_hash : dummyHash
+    user ? user.password_hash : dummyHash,
   );
 
   // 3. Same error for both wrong phone and wrong password
@@ -157,10 +156,7 @@ export const loginUser = async ({ phone, password }) => {
       is_verified: user.is_verified,
     },
   };
-
-  
 };
-
 
 // GET /api/v1/users/profile
 // Header: Authorization: Bearer <accessToken>
