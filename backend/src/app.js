@@ -3,9 +3,10 @@ import cors from "cors";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { logger } from "./config/logger.js";
 import userRoutes from "./modules/users/user.routes.js";
-
+import cookieParser from "cookie-parser";
 
 const app = express();
+app.use(cookieParser());
 //  to convert hte js object into json
 app.use(express.json());
 app.use(

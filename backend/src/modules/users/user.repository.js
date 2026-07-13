@@ -108,6 +108,19 @@ class UserRepository {
 
     return result.rows[0];
   }
+
+  async logoutUser(userId) {
+    const result = await pool.query(
+      `UPDATE users
+       SET refresh_token = NULL,
+           updated_at = NOW()
+       WHERE user_id = $1
+       RETURNING user_id, name, email, role`,
+      [userId],
+    );
+
+    return result.rows[0];
+  }
 }
 
 export default new UserRepository();

@@ -1,7 +1,7 @@
 import userRepository from "./user.repository.js";
 import { comparePassword, hashedPassword } from "../../utils/bcrypt.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.js";
-import { hashToken } from "../../utils/jwt.js";
+import { hashToken, verifyRefreshToken } from "../../utils/jwt.js";
 import {
   generateOtp,
   saveOtp,
@@ -158,6 +158,32 @@ export const loginUser = async ({ phone, password }) => {
   };
 };
 
+export const logoutUser = async (userId) => {
+  await userRepository.saveRefreshToken(userId, null);
+  return { message: "Logged out successfully" };
+};
+
+export const refreshgenerateAccessToken = async (refreshToken) => {
+  if (!refreshToken) throw new Error("Refresh token not found");
+
+  // 1. Verify signature first
+  verifyRefreshToken(refreshToken);
+
+  // 2. Hash → check DB
+  const tokenHash = hashToken(refreshToken);
+  const user = await userRepository.findRefreshToken(tokenHash);
+  if (!user) throw new Error("Invalid refresh token");
+  console.log("User found for refresh token:", user);
+
+  // 3. Issue new accessToken
+  const accessToken = generateAccessToken({
+    sub: user.user_id,
+    phone: user.phone,
+    role: user.role,
+  });
+
+  return { accessToken };
+};
 // GET /api/v1/users/profile
 // Header: Authorization: Bearer <accessToken>
 //               │
