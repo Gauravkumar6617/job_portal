@@ -33,6 +33,10 @@ CREATE TABLE candidate_profiles (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
+CREATE INDEX idx_candidate_profiles_user ON candidate_profiles(user_id);
+CREATE INDEX idx_candidate_profiles_location ON candidate_profiles(city, state, country);
+CREATE INDEX idx_candidate_profiles_resume_score ON candidate_profiles(ai_resume_score DESC);
+
 
 
 CREATE TABLE candidate_experiences (
@@ -58,6 +62,9 @@ CREATE TABLE candidate_experiences (
         OR end_date >= start_date
     )
 );
+
+CREATE INDEX idx_candidate_experiences_user ON candidate_experiences(user_id);
+CREATE INDEX idx_candidate_experiences_dates ON candidate_experiences(start_date, end_date);
 --  CANDITATE EDUCATION TABLE
 CREATE TABLE candidate_educations (
     education_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -70,10 +77,12 @@ CREATE TABLE candidate_educations (
     description TEXT,
     end_date DATE,
     gpa DECIMAL(3, 2) CHECK (gpa >= 0 AND gpa <= 4.0),
-    description TEXT,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_candidate_educations_user ON candidate_educations(user_id);
+CREATE INDEX idx_candidate_educations_degree ON candidate_educations(highest_degree);
 
 
 
@@ -86,3 +95,7 @@ CREATE TABLE candidate_skills (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_candidate_skills_user ON candidate_skills(user_id);
+CREATE INDEX idx_candidate_skills_name ON candidate_skills(skill_name);
+CREATE INDEX idx_candidate_skills_proficiency ON candidate_skills(proficiency_level);

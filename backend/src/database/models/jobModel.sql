@@ -2,7 +2,13 @@ CREATE TABLE jobs (
     job_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
     user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-    category_id UUID NOT NULL REFERENCES categories(category_id) ON DELETE SET NULL,
+    company_id UUID NOT NULL REFERENCES company(company_id),
+    recruiter_id UUID NOT NULL REFERENCES recruiter(recruiter_id),
+
+    category_id UUID NOT NULL
+        REFERENCES categories(category_id),
+
+
 
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
@@ -15,3 +21,12 @@ CREATE TABLE jobs (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_jobs_user ON jobs(user_id);
+CREATE INDEX idx_jobs_company ON jobs(company_id);
+CREATE INDEX idx_jobs_recruiter ON jobs(recruiter_id);
+CREATE INDEX idx_jobs_category ON jobs(category_id);
+CREATE INDEX idx_jobs_location ON jobs(location);
+CREATE INDEX idx_jobs_employment_type ON jobs(employment_type);
+CREATE INDEX idx_jobs_experience_level ON jobs(experience_level);
+CREATE INDEX idx_jobs_created_at ON jobs(created_at DESC);

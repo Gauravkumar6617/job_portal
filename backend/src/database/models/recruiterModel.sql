@@ -1,0 +1,16 @@
+CREATE TABLE recruiter(
+ recruiter_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+ company_id UUID NOT NULL REFERENCES company(company_id) ON DELETE CASCADE,
+ name VARCHAR(255) NOT NULL,
+ email VARCHAR(255) UNIQUE NOT NULL,
+ phone_number VARCHAR(20) UNIQUE,
+ title VARCHAR(255),
+ created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+ updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+)
+;
+
+CREATE INDEX idx_recruiter_user ON recruiter(user_id);
+CREATE INDEX idx_recruiter_company ON recruiter(company_id);
+CREATE INDEX idx_recruiter_email ON recruiter(email);
