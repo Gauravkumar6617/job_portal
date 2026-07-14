@@ -2,8 +2,8 @@ import express from "express";
 import app from "./app.js";
 import { env } from "./config/env.js";
 import { pool } from "./config/db.js";
-
-
+import { createServer } from "http";
+import { initSocket } from "./config/socket.js";
 // server.js
 const startServer = async () => {
   try {
@@ -13,8 +13,11 @@ const startServer = async () => {
     console.warn('⚠️ Database connection failed — continuing anyway:', error.message);
     // don't process.exit(1) — let server start
   }
+  const httpServer = createServer(app);
+  initSocket(httpServer);
 
-  app.listen(env.PORT, () => {
+
+  httpServer.listen(env.PORT, () => {
     console.log(`✅ Server running in [${env.NODE_ENV}] mode on port ${env.PORT}`);
   });
 };

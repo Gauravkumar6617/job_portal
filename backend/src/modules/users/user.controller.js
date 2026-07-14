@@ -8,10 +8,14 @@ import {
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { successResponse } from "../../utils/response.js";
 
+
+// user register controller using registerUser service and send otp
 export const userRegister = asyncHandler(async (req, res) => {
   const result = await registerUser(req.body); // ← result not user
   successResponse(res, result, "User registered successfully", 201);
 });
+
+// otp verify that we send 
 export const otpVerify = asyncHandler(async (req, res) => {
   const result = await verifyUserOtp(req.body);
   successResponse(res, result, "OTP verified successfully", 200);

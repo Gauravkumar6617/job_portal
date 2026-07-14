@@ -4,7 +4,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { logger } from "./config/logger.js";
 import userRoutes from "./modules/users/user.routes.js";
 import cookieParser from "cookie-parser";
-
+import { sendToUser } from "./utils/socketHelper.js";
 const app = express();
 app.use(cookieParser());
 //  to convert hte js object into json
@@ -38,4 +38,12 @@ app.get("/health", (req, res) => {
 
 // user auth api
 app.use("/api/v1/users", userRoutes);
+
+app.get("/test-socket/:userId", (req, res) => {
+  sendToUser(req.params.userId, "notification", {
+    message: "Hello from server! 🎉",
+    timestamp: new Date(),
+  });
+  res.json({ success: true, message: "Notification sent" });
+});
 export default app;
