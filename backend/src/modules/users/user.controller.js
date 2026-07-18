@@ -3,10 +3,11 @@ import {
   loginUser,
   verifyUserOtp,
   logoutUser,
-  refreshgenerateAccessToken,
+  refreshgenerateAccessToken,getUserProfile
 } from "./user.service.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { successResponse } from "../../utils/response.js";
+import { logger } from "../../config/logger.js";
 
 
 // user register controller using registerUser service and send otp
@@ -20,6 +21,8 @@ export const otpVerify = asyncHandler(async (req, res) => {
   const result = await verifyUserOtp(req.body);
   successResponse(res, result, "OTP verified successfully", 200);
 });
+
+// otp resend 
 export const otpResend = asyncHandler(async (req, res) => {
   const result = await resendOtp(req.body);
   successResponse(res, result, "OTP resent successfully", 200);
@@ -34,6 +37,20 @@ export const userLogin = asyncHandler(async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   successResponse(res, { accessToken, user }, "Logged in successfully", 200);
+});
+
+
+export const userProfile =asyncHandler(async(req ,res)=>{
+
+  try {
+    const result = await getUserProfile(req.user.sub)
+    successResponse(res, result, "Profile fetch successfully", 200);
+    
+  } catch (error) {
+    logger.error(error.message)
+    console.log(error,"error while getting user profile")
+    
+  }
 });
 
 export const userLogout = asyncHandler(async (req, res) => {

@@ -12,6 +12,7 @@ import {
   otpResend,
   userLogout,
   refreshAccessTokenController,
+  userProfile
 } from "./user.controller.js";
 import { authenticate } from "../../middleware/validate.js";
 
@@ -23,5 +24,7 @@ router.post("/login", loginLimiter, userLogin);
 router.post("/resend-otp", VerifyLimit, otpResend);
 router.post("/logout", authenticate, userLogout);
 router.post("/refresh-token", refreshAccessTokenController);
+router.get("/profile", authenticate, userProfile);
+
 
 export default router;

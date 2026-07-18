@@ -36,7 +36,9 @@ class UserRepository {
   }
   async getUserById(userId) {
     const result = await pool.query(
-      `SELECT *
+      `SELECT user_id ,name,email ,phone ,role, is_verified,
+       created_at
+
        FROM users
        WHERE user_id = $1
        AND is_deleted = FALSE`,

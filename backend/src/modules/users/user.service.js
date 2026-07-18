@@ -184,6 +184,14 @@ export const refreshgenerateAccessToken = async (refreshToken) => {
 
   return { accessToken };
 };
+
+export const getUserProfile = async (userId) => {
+  const user = await userRepository.getUserById(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
+}
 // GET /api/v1/users/profile
 // Header: Authorization: Bearer <accessToken>
 //               │

@@ -3,3 +3,5 @@ nonode_modules/
 **/node_modules/
 **/.env
 logs/*
+logs/combined.log
+logs/error.log

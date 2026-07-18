@@ -9,14 +9,14 @@ CREATE TABLE company(
     city VARCHAR(255),
     state VARCHAR(255),
     country VARCHAR(255),
+    is_verified BOOLEAN NOT NULL DEFAULT FALSE,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     location VARCHAR(255),
     website VARCHAR(255),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 
-)
-;
+);
 
 CREATE INDEX idx_company_email ON company(email);
 CREATE INDEX idx_company_location ON company(city, state, country);
