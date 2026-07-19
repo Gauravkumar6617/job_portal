@@ -2,8 +2,11 @@
 \i ./models/userModel.sql
 \i ./models/companyModel.sql
 \i ./models/recruiterModel.sql
+\i ./models/invitesModel.sql
 \i ./models/categoryModel.sql
 \i ./models/jobModel.sql
 \i ./models/applicationModel.sql
 \i ./models/canditaeProfileModel.sql
 \i ./models/notification.sql
+\i ./models/bookmarkModel.sql
+\i ./models/aiModel.sql
